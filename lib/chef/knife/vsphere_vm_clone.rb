@@ -39,6 +39,10 @@ class Chef::Knife::VsphereVmClone < Chef::Knife::BaseVsphereCommand
          :description => "The source VM / Template to clone from",
          :required => true
 
+  option :hypervisor,
+         :long => "--hypervisor IP",
+         :description => "The hypervisor into which to put the cloned VM"
+
   option :annotation,
          :long => "--annotation TEXT",
          :description => "Add TEXT in Notes field from annotation"
@@ -262,9 +266,11 @@ class Chef::Knife::VsphereVmClone < Chef::Knife::BaseVsphereCommand
       rspec = RbVmomi::VIM.VirtualMachineRelocateSpec(:pool => find_pool(get_config(:resource_pool)))
     else
       dcname = get_config(:vsphere_dc)
+      hypervisor_ip = config[:hypervisor]
       dc = config[:vim].serviceInstance.find_datacenter(dcname) or abort "datacenter not found"
       hosts = find_all_in_folder(dc.hostFolder, RbVmomi::VIM::ComputeResource)
-      rp = hosts.first.resourcePool
+      host = hosts.select{|host| host.name == hypervisor_ip}.first || hosts.first
+      rp = host.resourcePool
       rspec = RbVmomi::VIM.VirtualMachineRelocateSpec(:pool => rp)
     end
 

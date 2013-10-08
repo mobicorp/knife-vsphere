@@ -105,6 +105,7 @@ e.g. knife vsphere vm clone NewNode UbuntuTemplate --cspec StaticSpec \
    --no-host-key-verify - Disable host key verification
    --json-attributes - A JSON string to be added to the first run of chef-client
    --disable-customization - Disable default customization
+   --hypervisor - The hypervisor into which to put the cloned VM
 
 
 Clones an existing VM template into a new VM instance, optionally applying an existing customization specification.
